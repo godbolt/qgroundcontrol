@@ -122,18 +122,18 @@ void QGCRemoteControlView::setChannelRaw(int channelId, float raw)
 
 void QGCRemoteControlView::setChannelScaled(int channelId, float normalized)
 {
-    if (this->raw.size() <= channelId) // using raw vector as size indicator
-    {
-        // This is a new channel, append it
-        this->normalized.append(normalized);
-        this->raw.append(0);
-        appendChannelWidget(channelId);
-    }
-    else
-    {
-        // This is an existing channel, update it
-        this->normalized[channelId] = normalized;
-    }
+//    if (this->raw.size() <= channelId) // using raw vector as size indicator
+//    {
+//        // This is a new channel, append it
+//        this->normalized.append(normalized);
+//        this->raw.append(0);
+//        appendChannelWidget(channelId);
+//    }
+//    else
+//    {
+//        // This is an existing channel, update it
+//        this->normalized[channelId] = normalized;
+//    }
 //    updated = true;
 
 //    // FIXME Will be timer based in the future
