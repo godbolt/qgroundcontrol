@@ -37,6 +37,7 @@ This file is part of the QGROUNDCONTROL project
 #include "QGCRemoteControlView.h"
 #include "ui_QGCRemoteControlView.h"
 #include "UASManager.h"
+#include <assert.h>
 
 QGCRemoteControlView::QGCRemoteControlView(QWidget *parent) :
     QWidget(parent),
@@ -104,11 +105,11 @@ void QGCRemoteControlView::setUASId(int id)
 
 void QGCRemoteControlView::setChannelRaw(int channelId, float raw)
 {
-
+    assert(this->normalized.size() == this->raw.size());
     if (this->raw.size() <= channelId) {
         // This is a new channel, append it
         this->raw.append(raw);
-        //this->normalized.append(0);
+        this->normalized.append(0);
         appendChannelWidget(channelId);
     } else {
         // This is an existing channel, aupdate it
@@ -122,19 +123,20 @@ void QGCRemoteControlView::setChannelRaw(int channelId, float raw)
 
 void QGCRemoteControlView::setChannelScaled(int channelId, float normalized)
 {
-//    if (this->raw.size() <= channelId) // using raw vector as size indicator
-//    {
-//        // This is a new channel, append it
-//        this->normalized.append(normalized);
-//        this->raw.append(0);
-//        appendChannelWidget(channelId);
-//    }
-//    else
-//    {
-//        // This is an existing channel, update it
-//        this->normalized[channelId] = normalized;
-//    }
-//    updated = true;
+    assert(this->normalized.size() == this->raw.size());
+    if (this->normalized.size() <= channelId) // using raw vector as size indicator
+    {
+        // This is a new channel, append it
+        this->normalized.append(normalized);
+        this->raw.append(0);
+        appendChannelWidget(channelId);
+    }
+    else
+    {
+        // This is an existing channel, update it
+        this->normalized[channelId] = normalized;
+    }
+    updated = true;
 
 //    // FIXME Will be timer based in the future
 //    redraw();
