@@ -942,11 +942,12 @@ void UAS::receiveMessage(LinkInterface* link, mavlink_message_t message)
             //            }
             //            break;
             //#endif
-#ifdef MAVLINK_ENABLED_UALBERTA
+#ifdef QGC_USE_UALBERTA_MESSAGES
         case MAVLINK_MSG_ID_NAV_FILTER_BIAS: {
                 mavlink_nav_filter_bias_t bias;
                 mavlink_msg_nav_filter_bias_decode(&message, &bias);
-                quint64 time = getUnixTime();
+                qDebug() << "message: received nav filter bias message.";
+                quint64 time = bias.usec;
                 emit valueChanged(uasId, "b_f[0]", "raw", bias.accel_0, time);
                 emit valueChanged(uasId, "b_f[1]", "raw", bias.accel_1, time);
                 emit valueChanged(uasId, "b_f[2]", "raw", bias.accel_2, time);
@@ -1523,7 +1524,7 @@ void UAS::enableExtendedSystemStatusTransmission(int rate)
 
 void UAS::enableRCChannelDataTransmission(int rate)
 {
-#if defined(MAVLINK_ENABLED_UALBERTA_MESSAGES)
+#if defined(QGC_ENABLED_UALBERTA_MESSAGES)
     mavlink_message_t msg;
     mavlink_msg_request_rc_channels_pack(mavlink->getSystemId(), mavlink->getComponentId(), &msg, enabled);
     sendMessage(msg);
