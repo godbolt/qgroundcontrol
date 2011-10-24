@@ -37,6 +37,24 @@ QGCCommandButton::QGCCommandButton(QWidget *parent) :
     // Add commands to combo box
     ui->editCommandComboBox->addItem("DO: Control Video", MAV_CMD_DO_CONTROL_VIDEO);
     ui->editCommandComboBox->addItem("PREFLIGHT: Calibration", MAV_CMD_PREFLIGHT_CALIBRATION);
+    ui->editCommandComboBox->addItem("CUSTOM 0", 0);
+    ui->editCommandComboBox->addItem("CUSTOM 1", 1);
+    ui->editCommandComboBox->addItem("CUSTOM 2", 2);
+    ui->editCommandComboBox->addItem("CUSTOM 3", 3);
+    ui->editCommandComboBox->addItem("CUSTOM 4", 4);
+    ui->editCommandComboBox->addItem("CUSTOM 5", 5);
+    ui->editCommandComboBox->addItem("CUSTOM 6", 6);
+    ui->editCommandComboBox->addItem("CUSTOM 7", 7);
+    ui->editCommandComboBox->addItem("CUSTOM 8", 8);
+    ui->editCommandComboBox->addItem("CUSTOM 9", 9);
+    ui->editCommandComboBox->addItem("CUSTOM 10", 10);
+    ui->editCommandComboBox->addItem("CUSTOM 11", 11);
+    ui->editCommandComboBox->addItem("CUSTOM 12", 12);
+    ui->editCommandComboBox->addItem("CUSTOM 13", 13);
+    ui->editCommandComboBox->addItem("CUSTOM 14", 14);
+    ui->editCommandComboBox->addItem("CUSTOM 15", 15);
+    ui->editCommandComboBox->addItem("NAV_WAYPOINT", 16);
+    ui->editCommandComboBox->setEditable(true);
 }
 
 QGCCommandButton::~QGCCommandButton()
@@ -58,6 +76,7 @@ void QGCCommandButton::sendCommand()
         int component = ui->editComponentSpinBox->value();
 
         QGCToolWidgetItem::uas->executeCommand(command, confirm, param1, param2, param3, param4, component);
+        qDebug() << __FILE__ << __LINE__ << "SENDING COMMAND" << index;
     } else {
         qDebug() << __FILE__ << __LINE__ << "NO UAS SET, DOING NOTHING";
     }

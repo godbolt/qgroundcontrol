@@ -28,14 +28,16 @@ This file is part of the QGROUNDCONTROL project
 #include <QAction>
 #include <QToolButton>
 #include <QLabel>
+#include <QProgressBar>
 #include "UASInterface.h"
+#include "QGCMAVLinkLogPlayer.h"
 
 class QGCToolBar : public QToolBar
 {
     Q_OBJECT
 
 public:
-    explicit QGCToolBar(QWidget *parent = 0);
+    explicit QGCToolBar(QWidget* parent = 0);
     void addPerspectiveChangeAction(QAction* action);
     ~QGCToolBar();
 
@@ -50,6 +52,20 @@ public slots:
     void updateName(const QString& name);
     /** @brief Set the MAV system type */
     void setSystemType(UASInterface* uas, unsigned int systemType);
+    /** @brief Received system text message */
+    void receiveTextMessage(int uasid, int componentid, int severity, QString text);
+    /** @brief Start / stop logging */
+    void logging(bool enabled);
+    /** @brief Start playing logfile */
+    void playLogFile(bool enabled);
+    /** @brief Set log playing component */
+    void setLogPlayer(QGCMAVLinkLogPlayer* player);
+    /** @brief Update battery charge state */
+    void updateBatteryRemaining(UASInterface* uas, double voltage, double percent, int seconds);
+    /** @brief Update current waypoint */
+    void updateCurrentWaypoint(quint16 id);
+    /** @brief Update distance to current waypoint */
+    void updateWaypointDistance(double distance);
 
 protected:
     void createCustomWidgets();
@@ -58,12 +74,15 @@ protected:
     QAction* logReplayAction;
     UASInterface* mav;
     QToolButton* symbolButton;
-    QLabel* nameLabel;
-    QLabel* modeLabel;
-    QLabel* stateLabel;
-    QLabel* wpLabel;
-    QLabel* distlabel;
-
+    QLabel* toolBarNameLabel;
+    QLabel* toolBarModeLabel;
+    QLabel* toolBarStateLabel;
+    QLabel* toolBarWpLabel;
+    QLabel* toolBarDistLabel;
+    QLabel* toolBarMessageLabel;
+    QProgressBar* toolBarBatteryBar;
+    QLabel* toolBarBatteryVoltageLabel;
+    QGCMAVLinkLogPlayer* player;
 };
 
 #endif // QGCTOOLBAR_H

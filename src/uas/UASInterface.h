@@ -74,10 +74,12 @@ public:
     virtual double getLocalX() const = 0;
     virtual double getLocalY() const = 0;
     virtual double getLocalZ() const = 0;
+    virtual bool localPositionKnown() const = 0;
 
     virtual double getLatitude() const = 0;
     virtual double getLongitude() const = 0;
     virtual double getAltitude() const = 0;
+    virtual bool globalPositionKnown() const = 0;
 
     virtual double getRoll() const = 0;
     virtual double getPitch() const = 0;
@@ -176,13 +178,63 @@ public:
 
     /** @brief Get the type of the system (airplane, quadrotor, helicopter,..)*/
     virtual int getSystemType() = 0;
+    /** @brief Get the type of the autopilot (PIXHAWK, APM, UDB, PPZ,..) */
+    virtual int getAutopilotType() = 0;
+    virtual void setAutopilotType(int apType)= 0;
+
+    QString getSystemTypeString(int type)
+    {
+        switch (type)
+        {
+        default:
+        case 0:
+            return "MAV_TYPE_GENERIC";
+        case 1:
+            return "MAV_TYPE_FIXED_WING";
+        case 2:
+            return "MAV_TYPE_QUADROTOR";
+        case 3:
+            return "MAV_TYPE_COAXIAL";
+        case 4:
+            return "MAV_TYPE_HELICOPTER";
+        case 5:
+            return "MAV_TYPE_GROUND";
+        case 6:
+            return "MAV_TYPE_GCS";
+        case 7:
+            return "MAV_TYPE_AIRSHIP";
+        case 8:
+            return "MAV_TYPE_FREE_BALLOON";
+        case 9:
+            return "MAV_TYPE_ROCKET";
+        case 10:
+            return "MAV_TYPE_UGV_GROUND_ROVER";
+        case 11:
+            return "MAV_TYPE_UGV_SURFACE_SHIP";
+        }
+    }
+
+    QString getAutopilotTypeString(int type)
+    {
+        switch (type)
+        {
+        default:
+        case 0:
+            return "MAV_AUTOPILOT_GENERIC";
+        case 1:
+            return "MAV_AUTOPILOT_PIXHAWK";
+        case 2:
+            return "MAV_AUTOPILOT_SLUGS";
+        case 3:
+            return "MAV_AUTOPILOT_ARDUPILOTMEGA";
+        case 4:
+            return "MAV_AUTOPILOT_OPENPILOT";
+        }
+    }
 
     QColor getColor() {
         return color;
     }
-
-    virtual int getAutopilotType() = 0;
-    virtual void setAutopilotType(int apType)= 0;
 
 public slots:
 
@@ -471,6 +523,9 @@ signals:
     void systemSelected(bool selected);
     /** @brief Core specifications have changed */
     void systemSpecsChanged(int uasId);
+
+    /** @brief Object detected */
+    void objectDetected(unsigned int time, int id, int type, const QString& name, int quality, float bearing, float distance);
 
 
     // HOME POSITION / ORIGIN CHANGES

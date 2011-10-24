@@ -231,7 +231,7 @@ void UASView::mouseDoubleClickEvent (QMouseEvent * event)
 {
     Q_UNUSED(event);
     UASManager::instance()->setActiveUAS(uas);
-    qDebug() << __FILE__ << __LINE__ << "DOUBLECLICKED";
+    // qDebug() << __FILE__ << __LINE__ << "DOUBLECLICKED";
 }
 
 void UASView::enterEvent(QEvent* event)
@@ -242,10 +242,10 @@ void UASView::enterEvent(QEvent* event)
             grabMouse(QCursor(Qt::PointingHandCursor));
         }
     }
-    qDebug() << __FILE__ << __LINE__ << "IN FOCUS";
+    // qDebug() << __FILE__ << __LINE__ << "IN FOCUS";
 
     if (event->type() == QEvent::MouseButtonDblClick) {
-        qDebug() << __FILE__ << __LINE__ << "UAS CLICKED!";
+        // qDebug() << __FILE__ << __LINE__ << "UAS CLICKED!";
     }
 }
 
@@ -499,7 +499,7 @@ void UASView::refresh()
     //repaint();
 
     static quint64 lastupdate = 0;
-    //qDebug() << "UASVIEW update diff: " << MG::TIME::getGroundTimeNow() - lastupdate;
+    //// qDebug() << "UASVIEW update diff: " << MG::TIME::getGroundTimeNow() - lastupdate;
     lastupdate = MG::TIME::getGroundTimeNow();
 
     // FIXME
@@ -507,10 +507,10 @@ void UASView::refresh()
 
     if (generalUpdateCount == 4) {
 #if (QGC_EVENTLOOP_DEBUG)
-        qDebug() << "EVENTLOOP:" << __FILE__ << __LINE__;
+        // qDebug() << "EVENTLOOP:" << __FILE__ << __LINE__;
 #endif
         generalUpdateCount = 0;
-        //qDebug() << "UPDATING EVERYTHING";
+        //// qDebug() << "UPDATING EVERYTHING";
         // State
         m_ui->stateLabel->setText(state);
         m_ui->statusTextLabel->setText(stateDesc);
@@ -602,6 +602,8 @@ void UASView::refresh()
             m_ui->heartbeatIcon->setStyleSheet(colorstyle.arg(warnColor.name()));
             QString style = QString("QGroupBox { border-radius: 12px; padding: 0px; margin: 0px; border: 2px solid %1; background-color: %2; }").arg(borderColor, warnColor.name());
             m_ui->uasViewFrame->setStyleSheet(style);
+
+            refreshTimer->setInterval(errorUpdateInterval);
         }
         iconIsRed = !iconIsRed;
     } else {
@@ -609,10 +611,11 @@ void UASView::refresh()
         {
             // Fade heartbeat icon
             // Make color darker
-            heartbeatColor = heartbeatColor.darker(150);
+            heartbeatColor = heartbeatColor.darker(210);
 
             //m_ui->heartbeatIcon->setAutoFillBackground(true);
             m_ui->heartbeatIcon->setStyleSheet(colorstyle.arg(heartbeatColor.name()));
+            refreshTimer->setInterval(updateInterval);
         }
     }
     //setUpdatesEnabled(true);

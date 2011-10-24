@@ -65,6 +65,7 @@ public slots:
     void updateAttitudeControllerEnabled(bool enabled);
     void updatePositionXYControllerEnabled(bool enabled);
     void updatePositionZControllerEnabled(bool enabled);
+    void updateObjectPosition(unsigned int time, int id, int type, const QString& name, int quality, float bearing, float distance);
     /** @brief Heading control enabled/disabled */
     void updatePositionYawControllerEnabled(bool enabled);
 
@@ -84,6 +85,15 @@ public slots:
     void pressKey(int key);
     /** @brief Reset the state of the view */
     void resetMAVState();
+    /** @brief Clear the status message */
+    void clearStatusMessage()
+    {
+        statusMessage = "";
+        if (actionPending) statusMessage = "TIMED OUT, NO ACTION";
+        statusClearTimer.start();
+        userSetPointSet = false;
+        actionPending = false;
+    }
 
 signals:
     void metricWidthChanged(double width);
@@ -100,19 +110,33 @@ protected slots:
     /** @brief Draw a position lock indicator */
     void drawPositionLock(float x, float y, QString label, int status, bool known, QPainter& painter);
     void setBodySetpointCoordinateXY(double x, double y);
+    void setBodySetpointCoordinateYaw(double yaw);
     void setBodySetpointCoordinateZ(double z);
     /** @brief Send the current ui setpoint coordinates as new setpoint to the MAV */
     void sendBodySetPointCoordinates();
     /** @brief Draw one setpoint */
-    void drawSetpointXY(float x, float y, float yaw, const QColor &color, QPainter &painter);
+    void drawSetpointXYZYaw(float x, float y, float z, float yaw, const QColor &color, QPainter &painter);
     /** @brief Draw waypoints of this system */
     void drawWaypoints(QPainter& painter);
     /** @brief Draw the limiting safety area */
     void drawSafetyArea(const QPointF &topLeft, const QPointF &bottomRight,  const QColor &color, QPainter &painter);
     /** @brief Receive mouse clicks */
     void mouseDoubleClickEvent(QMouseEvent* event);
+    void mousePressEvent(QMouseEvent * event);
+    void mouseReleaseEvent(QMouseEvent * event);
+    void mouseMoveEvent(QMouseEvent * event);
     /** @brief Receive mouse wheel events */
     void wheelEvent(QWheelEvent* event);
+    /** @brief Read out send keys */
+    void keyPressEvent(QKeyEvent* event);
+    /** @brief Ignore context menu event */
+    void contextMenuEvent (QContextMenuEvent* event);
+    /** @brief Set status message on screen */
+    void setStatusMessage(const QString& message)
+    {
+        statusMessage = message;
+        statusClearTimer.start();
+    }
 
 protected:
 
@@ -130,8 +154,25 @@ protected:
     QPointF refToMetricBody(QPointF &ref);
     /** @brief Metric coordinates to reference coordinates */
     QPointF metricBodyToRef(QPointF &metric);
+    /** @brief Metric length to reference coordinates */
+    double metricToRef(double metric);
+    /** @bried Reference coordinates to metric length */
+    double refToMetric(double ref);
     /** @brief Metric body coordinates to screen coordinates */
     QPointF metricBodyToScreen(QPointF metric);
+    QMap<int, QString> objectNames;
+    QMap<int, int> objectTypes;
+    QMap<int, float> objectQualities;
+    QMap<int, float> objectBearings;
+    QMap<int, float> objectDistances;
+    bool dragStarted;
+    bool leftDragStarted;
+    bool mouseHasMoved;
+    float startX;
+    float startY;
+    QTimer statusClearTimer;
+    QString statusMessage;
+    bool actionPending;
 
     /**
      * @brief Private data container class to be used within the HSI widget
@@ -248,7 +289,8 @@ protected:
     // Data indicators
     bool setPointKnown;       ///< Controller setpoint known status flag
     bool positionSetPointKnown; ///< Position setpoint known status flag
-    bool userSetPointSet;
+    bool userSetPointSet;     ///< User set X, Y and Z
+    bool userXYSetPointSet;   ///< User set the X/Y position already
 
 private:
 };

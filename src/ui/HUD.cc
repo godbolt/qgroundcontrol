@@ -198,16 +198,18 @@ void HUD::showEvent(QShowEvent* event)
 {
     // React only to internal (pre-display)
     // events
-    Q_UNUSED(event)
+    QGLWidget::showEvent(event);
     refreshTimer->start(updateInterval);
+    emit visibilityChanged(true);
 }
 
 void HUD::hideEvent(QHideEvent* event)
 {
     // React only to internal (pre-display)
     // events
-    Q_UNUSED(event);
     refreshTimer->stop();
+    QGLWidget::hideEvent(event);
+    emit visibilityChanged(false);
 }
 
 void HUD::contextMenuEvent (QContextMenuEvent* event)
@@ -1047,10 +1049,10 @@ void HUD::paintPitchLines(float pitch, QPainter* painter)
     float offset = pitch;
     if (offset < 0) offset = -offset;
     int offsetCount = 0;
-    while (offset > lineDistance) {
-        offset -= lineDistance;
-        offsetCount++;
-    }
+//    while (offset > lineDistance) {
+//        offset -= lineDistance;
+//        offsetCount++;
+//    }
 
     int iPos = (int)(0.5f + lineDistance); ///< The first line
     int iNeg = (int)(-0.5f - lineDistance); ///< The first line

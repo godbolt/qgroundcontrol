@@ -85,9 +85,10 @@ void UDPLink::setPort(int port)
  */
 void UDPLink::addHost(const QString& host)
 {
-    qDebug() << "UDP:" << "ADDING HOST:" << host;
-    if (host.contains(":")) {
-        qDebug() << "HOST: " << host.split(":").first();
+    //qDebug() << "UDP:" << "ADDING HOST:" << host;
+    if (host.contains(":"))
+    {
+        //qDebug() << "HOST: " << host.split(":").first();
         QHostInfo info = QHostInfo::fromName(host.split(":").first());
         if (info.error() == QHostInfo::NoError)
         {
@@ -103,7 +104,7 @@ void UDPLink::addHost(const QString& host)
                 }
             }
             hosts.append(address);
-            qDebug() << "Address:" << address.toString();
+            //qDebug() << "Address:" << address.toString();
             // Set port according to user input
             ports.append(host.split(":").last().toInt());
         }
@@ -129,14 +130,18 @@ void UDPLink::removeHost(const QString& hostname)
     QHostInfo info = QHostInfo::fromName(host);
     QHostAddress address;
     QList<QHostAddress> hostAddresses = info.addresses();
-    for (int i = 0; i < hostAddresses.size(); i++) {
+    for (int i = 0; i < hostAddresses.size(); i++)
+    {
         // Exclude loopback IPv4 and all IPv6 addresses
-        if (!hostAddresses.at(i).toString().contains(":")) {
+        if (!hostAddresses.at(i).toString().contains(":"))
+        {
             address = hostAddresses.at(i);
         }
     }
-    for (int i = 0; i < hosts.count(); ++i) {
-        if (hosts.at(i) == address) {
+    for (int i = 0; i < hosts.count(); ++i)
+    {
+        if (hosts.at(i) == address)
+        {
             hosts.removeAt(i);
             ports.removeAt(i);
         }
@@ -154,7 +159,8 @@ void UDPLink::writeBytes(const char* data, qint64 size)
 #ifdef UDPLINK_DEBUG
         QString bytes;
         QString ascii;
-        for (int i=0; i<size; i++) {
+        for (int i=0; i<size; i++)
+        {
             unsigned char v = data[i];
             bytes.append(QString().sprintf("%02x ", v));
             if (data[i] > 31 && data[i] < 127)
@@ -183,7 +189,7 @@ void UDPLink::writeBytes(const char* data, qint64 size)
 void UDPLink::readBytes()
 {
     const qint64 maxLength = 65536;
-    char data[maxLength];
+    static char data[maxLength];
     QHostAddress sender;
     quint16 senderPort;
 
@@ -207,11 +213,14 @@ void UDPLink::readBytes()
 
 
     // Add host to broadcast list if not yet present
-    if (!hosts.contains(sender)) {
+    if (!hosts.contains(sender))
+    {
         hosts.append(sender);
         ports.append(senderPort);
         //        ports->insert(sender, senderPort);
-    } else {
+    }
+    else
+    {
         int index = hosts.indexOf(sender);
         ports.replace(index, senderPort);
     }

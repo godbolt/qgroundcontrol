@@ -38,6 +38,7 @@ This file is part of the QGROUNDCONTROL project
 #include "Waypoint.h"
 #include "QGCMAVLink.h"
 class UAS;
+class UASInterface;
 
 /**
  * @brief Implementation of the MAVLINK waypoint protocol
@@ -138,6 +139,8 @@ public slots:
     void loadWaypoints(const QString &loadFile);           ///< loads a waypoint list from loadFile
     void notifyOfChange(Waypoint* wp);                     ///< Notifies manager to changes to a waypoint
     /*@}*/
+    void handleLocalPositionChanged(UASInterface* mav, double x, double y, double z, quint64 time);
+    void handleGlobalPositionChanged(UASInterface* mav, double lat, double lon, double alt, quint64 time);
 
 signals:
     void waypointListChanged(void);                 ///< emits signal that the waypoint list has been changed
@@ -145,6 +148,7 @@ signals:
     void waypointChanged(int uasid, Waypoint* wp);  ///< emits signal that waypoint has been changed
     void currentWaypointChanged(quint16);           ///< emits the new current waypoint sequence number
     void updateStatusString(const QString &);       ///< emits the current status string
+    void waypointDistanceChanged(double distance);   ///< Distance to next waypoint changed (in meters)
 
     void loadWPFile();                              ///< emits signal that a file wp has been load
     void readGlobalWPFromUAS(bool value);           ///< emits signal when finish to read Global WP from UAS
@@ -159,6 +163,7 @@ private:
     quint8 current_partner_compid;                  ///< The current protocol communication target component
 
     QVector<Waypoint *> waypoints;                  ///< local waypoint list (main storage)
+    Waypoint* currentWaypoint;                      ///< The currently used waypoint
     QVector<mavlink_waypoint_t *> waypoint_buffer;  ///< buffer for waypoints during communication
     QTimer protocol_timer;                          ///< Timer to catch timeouts
 };

@@ -73,6 +73,10 @@ public:
 public slots:
     void addCurve(const QString& curve, const QString& unit);
     void removeCurve(QString curve);
+    /** @brief Recolor all curves */
+    void recolor();
+    /** @brief Set short names for curves */
+    void setShortNames(bool enable);
     /** @brief Append data without unit */
     void appendData(int uasId, QString curve, double data, quint64 usec);
     /** @brief Append data with unit */
@@ -119,10 +123,13 @@ protected:
     int curveListCounter;                 ///< Counter of curves in curve list
     QList<QString>* listedCurves;         ///< Curves listed
     QMap<QString, QLabel*>* curveLabels;  ///< References to the curve labels
+    QMap<QString, QLabel*> curveNameLabels;  ///< References to the curve labels
+    QMap<QString, QString> curveNames;    ///< Full curve names
     QMap<QString, QLabel*>* curveMeans;   ///< References to the curve means
     QMap<QString, QLabel*>* curveMedians; ///< References to the curve medians
     QMap<QString, QLabel*>* curveVariances; ///< References to the curve variances
     QMap<QString, int> intData;           ///< Current values for integer-valued curves
+    QMap<QString, QWidget*> colorIcons;    ///< Reference to color icons
 
     QWidget* curvesWidget;                ///< The QWidget containing the curve selection button
     QGridLayout* curvesWidgetLayout;      ///< The layout for the curvesWidget QWidget
@@ -149,7 +156,7 @@ protected:
     QTimer* updateTimer;
     LogCompressor* compressor;
     QCheckBox* selectAllCheckBox;
-    static const int updateInterval = 400; ///< Time between number updates, in milliseconds
+    static const int updateInterval = 1000; ///< Time between number updates, in milliseconds
 
     static const int MAX_CURVE_MENUITEM_NUMBER = 8;
     static const int PAGESTEP_TIME_SCROLLBAR_VALUE = (MAX_TIME_SCROLLBAR_VALUE - MIN_TIME_SCROLLBAR_VALUE) / 10;
