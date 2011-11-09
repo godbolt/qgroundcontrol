@@ -66,5 +66,5 @@ QString RadioCalibrationData::toString(RadioElement element) const
 void RadioCalibrationData::set(int element, int index, uint16_t value)
 {
     (*data)[element][index] = value;
-//    qDebug() << __FILE__ << __LINE__ << "Element: " << element << " Index: " << index << " Value: " << value;
+    qDebug() << __FILE__ << __LINE__ << "Element: " << element << " Index: " << index << " Value: " << value;
 }

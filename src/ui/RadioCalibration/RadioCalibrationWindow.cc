@@ -283,7 +283,15 @@ void RadioCalibrationWindow::receive(const QPointer<RadioCalibrationData>& radio
 {
     if (radio) {
         if (this->radio)
+        {
+            disconnect(aileron, SIGNAL(setpointChanged(int,uint16_t)), this->radio, SLOT(setAileron(int,uint16_t)));
+            disconnect(elevator, SIGNAL(setpointChanged(int,uint16_t)), this->radio, SLOT(setElevator(int,uint16_t)));
+            disconnect(rudder, SIGNAL(setpointChanged(int,uint16_t)), this->radio, SLOT(setRudder(int,uint16_t)));
+            disconnect(gyro, SIGNAL(setpointChanged(int,uint16_t)), this->radio, SLOT(setGyro(int,uint16_t)));
+            disconnect(pitch, SIGNAL(setpointChanged(int,uint16_t)), this->radio, SLOT(setPitch(int,uint16_t)));
+            disconnect(throttle, SIGNAL(setpointChanged(int,uint16_t)), this->radio, SLOT(setThrottle(int,uint16_t)));
             delete this->radio;
+        }
         this->radio = new RadioCalibrationData(*radio);
 
         aileron->set((*radio)(RadioCalibrationData::AILERON));
@@ -292,5 +300,12 @@ void RadioCalibrationWindow::receive(const QPointer<RadioCalibrationData>& radio
         gyro->set((*radio)(RadioCalibrationData::GYRO));
         pitch->set((*radio)(RadioCalibrationData::PITCH));
         throttle->set((*radio)(RadioCalibrationData::THROTTLE));
+
+        connect(aileron, SIGNAL(setpointChanged(int,uint16_t)), this->radio, SLOT(setAileron(int,uint16_t)));
+        connect(elevator, SIGNAL(setpointChanged(int,uint16_t)), this->radio, SLOT(setElevator(int,uint16_t)));
+        connect(rudder, SIGNAL(setpointChanged(int,uint16_t)), this->radio, SLOT(setRudder(int,uint16_t)));
+        connect(gyro, SIGNAL(setpointChanged(int,uint16_t)), this->radio, SLOT(setGyro(int,uint16_t)));
+        connect(pitch, SIGNAL(setpointChanged(int,uint16_t)), this->radio, SLOT(setPitch(int,uint16_t)));
+        connect(throttle, SIGNAL(setpointChanged(int,uint16_t)), this->radio, SLOT(setThrottle(int,uint16_t)));
     }
 }
