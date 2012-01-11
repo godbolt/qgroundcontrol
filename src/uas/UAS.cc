@@ -887,6 +887,10 @@ void UAS::receiveMessage(LinkInterface* link, mavlink_message_t message)
                 mavlink_local_position_setpoint_t p;
                 mavlink_msg_local_position_setpoint_decode(&message, &p);
                 emit positionSetPointsChanged(uasId, p.x, p.y, p.z, p.yaw, QGC::groundTimeUsecs());
+                emit valueChanged(uasId, "x sp", "m", p.x, QGC::groundTimeUsecs());
+                emit valueChanged(uasId, "y sp", "m", p.y, QGC::groundTimeUsecs());
+                emit valueChanged(uasId, "z sp", "m", p.z, QGC::groundTimeUsecs());
+
             }
             break;
         case MAVLINK_MSG_ID_SERVO_OUTPUT_RAW:
