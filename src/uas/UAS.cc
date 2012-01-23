@@ -1096,6 +1096,20 @@ void UAS::receiveMessage(LinkInterface* link, mavlink_message_t message)
                 delete radioData;
             }
             break;
+        case MAVLINK_MSG_ID_NOVATEL_GPS_RAW:
+        {
+            mavlink_novatel_gps_raw_t raw_gps;
+            mavlink_msg_novatel_gps_raw_decode(&message, &raw_gps);
+            quint64 time = getUnixTime();
+            emit valueChanged(uasId, "pos sol type", "raw", raw_gps.pos_type, time);
+            emit valueChanged(uasId, "x ECEF", "m", raw_gps.pos_x, time);
+            emit valueChanged(uasId, "y ECEF", "m", raw_gps.pos_y, time);
+            emit valueChanged(uasId, "z ECEF", "m", raw_gps.pos_z, time);
+            emit valueChanged(uasId, "vel sol type", "raw", raw_gps.vel_type, time);
+            emit valueChanged(uasId, "vel x ECEF", "m/s", raw_gps.vel_x, time);
+            emit valueChanged(uasId, "vel y ECEF", "m/s", raw_gps.vel_y, time);
+            emit valueChanged(uasId, "vel z ECEF", "m/s", raw_gps.vel_z, time);
+        }
 
 #endif
             // Messages to ignore
