@@ -40,18 +40,16 @@ RadioCalibrationData::~RadioCalibrationData()
 
 const uint16_t* RadioCalibrationData::operator [](int i) const
 {
-    if (i < data->size()) {
+    if (i < data->size())
         return (*data)[i].constData();
-    }
 
     return NULL;
 }
 
 const QVector<uint16_t>& RadioCalibrationData::operator ()(const int i) const throw(std::out_of_range)
 {
-    if ((i < data->size()) && (i >=0)) {
-        return (*data)[i];
-    }
+    if ((i < data->size()) && (i >=0))
+        return (*data)[i];    
 
     throw std::out_of_range("Invalid channel index");
 }
@@ -59,8 +57,14 @@ const QVector<uint16_t>& RadioCalibrationData::operator ()(const int i) const th
 QString RadioCalibrationData::toString(RadioElement element) const
 {
     QString s;
-    foreach (float f, (*data)[element]) {
+    foreach (uint16_t f, (*data)[element])
         s += QString::number(f) + ", ";
-    }
+
     return s.mid(0, s.length()-2);
+}
+
+void RadioCalibrationData::set(int element, int index, uint16_t value)
+{
+    (*data)[element][index] = value;
+    qDebug() << __FILE__ << __LINE__ << "Element: " << element << " Index: " << index << " Value: " << value;
 }

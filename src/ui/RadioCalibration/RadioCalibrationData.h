@@ -73,29 +73,15 @@ public:
 #else
     const QVector<uint16_t>& operator()(int i) const throw(std::out_of_range);
 #endif
-    void set(int element, int index, float value) {
-        (*data)[element][index] = value;
-    }
+    void set(int element, int index, uint16_t value);
 
 public slots:
-    void setAileron(int index, uint16_t value) {
-        set(AILERON, index, value);
-    }
-    void setElevator(int index, uint16_t value) {
-        set(ELEVATOR, index, value);
-    }
-    void setRudder(int index, uint16_t value) {
-        set(RUDDER, index, value);
-    }
-    void setGyro(int index, uint16_t value) {
-        set(GYRO, index, value);
-    }
-    void setPitch(int index, uint16_t value) {
-        set(PITCH, index, value);
-    }
-    void setThrottle(int index, uint16_t value) {
-        set(THROTTLE, index, value);
-    }
+    void setAileron(int index, uint16_t value) {set(AILERON, index, value);}
+    void setElevator(int index, uint16_t value) {set(ELEVATOR, index, value);}
+    void setRudder(int index, uint16_t value) {set(RUDDER, index, value);}
+    void setGyro(int index, uint16_t value) {set(GYRO, index, value);}
+    void setPitch(int index, uint16_t value) {set(PITCH, index, value);}
+    void setThrottle(int index, uint16_t value) {set(THROTTLE, index, value);}
 
 public:
     /// Creates a comma seperated list of the values for a particular element
@@ -104,12 +90,12 @@ public:
 protected:
     QVector<QVector<uint16_t> > *data;
 
-    void init(const QVector<float>& aileron,
-              const QVector<float>& elevator,
-              const QVector<float>& rudder,
-              const QVector<float>& gyro,
-              const QVector<float>& pitch,
-              const QVector<float>& throttle);
+//    void init(const QVector<uint16_t>& aileron,
+//              const QVector<uint16_t>& elevator,
+//              const QVector<uint16_t>& rudder,
+//              const QVector<uint16_t>& gyro,
+//              const QVector<uint16_t>& pitch,
+//              const QVector<uint16_t>& throttle);
 
 };
 
