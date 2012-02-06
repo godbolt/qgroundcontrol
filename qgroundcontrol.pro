@@ -364,7 +364,8 @@ HEADERS += src/MG.h \
     src/ui/QGCPluginHost.h \
     src/ui/firmwareupdate/QGCPX4FirmwareUpdate.h \
     src/ui/map3D/gpl.h \
-    src/ui/ualberta/UAlbertaControlWidget.h
+    src/ui/ualberta/UAlbertaControlWidget.h \
+    src/uas/UAlbertaMAV.h
 
 # Google Earth is only supported on Mac OS and Windows with Visual Studio Compiler
 macx|macx-g++|macx-g++42|win32-msvc2008|win32-msvc2010::HEADERS += src/ui/map3D/QGCGoogleEarthView.h
@@ -499,7 +500,8 @@ SOURCES += src/main.cc \
     src/ui/QGCPluginHost.cc \
     src/ui/firmwareupdate/QGCPX4FirmwareUpdate.cc \
     src/ui/map3D/gpl.cc \
-    src/ui/ualberta/UAlbertaControlWidget.cc
+    src/ui/ualberta/UAlbertaControlWidget.cc \
+    src/uas/UAlbertaMAV.cc
 
 # Enable Google Earth only on Mac OS and Windows with Visual Studio compiler
 macx|macx-g++|macx-g++42|win32-msvc2008|win32-msvc2010::SOURCES += src/ui/map3D/QGCGoogleEarthView.cc

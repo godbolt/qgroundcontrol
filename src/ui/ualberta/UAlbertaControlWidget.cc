@@ -41,7 +41,7 @@ This file is part of the PIXHAWK project
 //#include <QPalette>
 
 
-//#include <UASManager.h>
+#include <UASManager.h>
 //#include <UAS.h>
 //#include "QGC.h"
 
@@ -51,7 +51,7 @@ UAlbertaControlWidget::UAlbertaControlWidget(QWidget *parent) :
     uasMode(0)
 {
 	ui.setupUi(this);
-
+	connect(UASManager::instance(), SIGNAL(activeUASSet(UASInterface*)), this, SLOT(setUAS(UASInterface*)));
 
 
 }
