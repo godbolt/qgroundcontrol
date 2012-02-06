@@ -292,13 +292,15 @@ linux-g++-64 {
 
     debug {
         #DESTDIR = $$TARGETDIR/debug
-        #CONFIG += debug console
+        CONFIG += debug console
+        message(Building Debug Version)
     }
 
     release {
         #DESTDIR = $$TARGETDIR/release
         DEFINES += QT_NO_DEBUG
         #CONFIG -= console
+        message(Building Release Version)
     }
 
     #QMAKE_POST_LINK += cp -rf $$BASEDIR/audio $$DESTDIR/.
@@ -373,17 +375,7 @@ linux-g++-64 {
         QMAKE_POST_LINK += && mkdir -p $$TARGETDIR/debug/images
         QMAKE_POST_LINK += && cp -rf $$BASEDIR/images/Vera.ttf $$TARGETDIR/debug/images/Vera.ttf
     }
-    release {
-        !exists($$TARGETDIR/release){
-             QMAKE_POST_LINK += && mkdir -p $$TARGETDIR/release
-        }
-        DESTDIR = $$TARGETDIR/release
-        QMAKE_POST_LINK += && cp -rf $$BASEDIR/audio $$TARGETDIR/release
-        QMAKE_POST_LINK += && cp -rf $$BASEDIR/files $$TARGETDIR/release
-        QMAKE_POST_LINK += && cp -rf $$BASEDIR/data $$TARGETDIR/release
-        QMAKE_POST_LINK += && mkdir -p $$TARGETDIR/release/images
-        QMAKE_POST_LINK += && cp -rf $$BASEDIR/images/Vera.ttf $$TARGETDIR/release/images/Vera.ttf
-    }
+
 
     # osg/osgEarth dynamic casts might fail without this compiler option.
     # see http://osgearth.org/wiki/FAQ for details.

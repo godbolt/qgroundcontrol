@@ -78,6 +78,8 @@ This file is part of the QGROUNDCONTROL project
 #include "QGCMAVLinkLogPlayer.h"
 #include "MAVLinkDecoder.h"
 
+#include "ualberta/UAlbertaControlWidget.h"
+
 class QGCMapTool;
 class QGCMAVLinkMessageSender;
 class QGCFirmwareUpdate;
@@ -347,6 +349,8 @@ protected:
     QPointer<QDockWidget> slugsDataWidget;
     QPointer<QDockWidget> slugsHilSimWidget;
     QPointer<QDockWidget> slugsCamControlWidget;
+
+    QPointer<QDockWidget> ualbertaControlWidget;
 
     QPointer<QGCToolBar> toolBar;
 

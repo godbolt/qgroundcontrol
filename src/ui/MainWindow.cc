@@ -497,6 +497,18 @@ void MainWindow::buildCommonWidgets()
         addTool(video2DockWidget, tr("Video Stream 2"), Qt::LeftDockWidgetArea);
     }
 
+#ifdef QGC_USE_UALBERTA_MESSAGES
+    if (!ualbertaControlWidget)
+    {
+    	qDebug() << "Load UAlberta Control Widget";
+    	ualbertaControlWidget = new QDockWidget(tr("UAlberta Autopilot Control"), this);
+    	UAlbertaControlWidget* ualberta = new UAlbertaControlWidget(this);
+    	ualbertaControlWidget->setWidget(ualberta);
+    	ualbertaControlWidget->setObjectName("UALBERTA_AUTOPILOT_CONTROL_WIDGET");
+    	addTool(ualbertaControlWidget, tr("UAlberta Autopilot Control"), Qt::RightDockWidgetArea);
+    }
+#endif
+
 //    if (!rgbd1DockWidget) {
 //        rgbd1DockWidget = new QDockWidget(tr("Video Stream 1"), this);
 //        HUD* video1 =  new HUD(160, 120, this);
