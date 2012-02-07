@@ -32,57 +32,43 @@ This file is part of the PIXHAWK project
 
 #include "UAlbertaControlWidget.h"
 
-//#include <QString>
+#include <QString>
 //#include <QTimer>
 //#include <QLabel>
 //#include <QFileDialog>
 //#include <QDebug>
 //#include <QProcess>
 //#include <QPalette>
+#include <QStringList>
 
 
 #include <UASManager.h>
+#include <UAlbertaMAV.h>
 //#include <UAS.h>
 //#include "QGC.h"
 
 UAlbertaControlWidget::UAlbertaControlWidget(QWidget *parent) :
 	QWidget(parent),
-    uas(0),
-    uasMode(0)
+    uas(0)
 {
 	ui.setupUi(this);
 	connect(UASManager::instance(), SIGNAL(activeUASSet(UASInterface*)), this, SLOT(setUAS(UASInterface*)));
+	connect(ui.servo_source_button, SIGNAL(clicked()), this, SLOT(setServoSource()));
+	connect(ui.control_mode_button, SIGNAL(clicked()), this, SLOT(setControlMode()));
+	connect(ui.ned_origin_button, SIGNAL(clicked()), this, SLOT(setOrigin()));
 
 
-}
+	// note string appear in same order as mavlink enum (necessary for indexing)
+	QStringList servo_sources;
+	servo_sources << "Direct Manual" << "Scaled Manual" << "Automatic Control";
+	ui.servo_source_box->addItems(servo_sources);
 
-void UAlbertaControlWidget::setUAS(UASInterface* uas)
-{
-//    if (this->uas != 0)
-//    {
-//        UASInterface* oldUAS = UASManager::instance()->getUASForId(this->uas);
-//        disconnect(ui.controlButton, SIGNAL(clicked()), oldUAS, SLOT(armSystem()));
-//        disconnect(ui.liftoffButton, SIGNAL(clicked()), oldUAS, SLOT(launch()));
-//        disconnect(ui.landButton, SIGNAL(clicked()), oldUAS, SLOT(home()));
-//        disconnect(ui.shutdownButton, SIGNAL(clicked()), oldUAS, SLOT(shutdown()));
-//        //connect(ui.setHomeButton, SIGNAL(clicked()), uas, SLOT(setLocalOriginAtCurrentGPSPosition()));
-//        disconnect(uas, SIGNAL(modeChanged(int,QString,QString)), this, SLOT(updateMode(int,QString,QString)));
-//        disconnect(uas, SIGNAL(statusChanged(int)), this, SLOT(updateState(int)));
-//    }
-//
-//    // Connect user interface controls
-//    connect(ui.controlButton, SIGNAL(clicked()), this, SLOT(cycleContextButton()));
-//    connect(ui.liftoffButton, SIGNAL(clicked()), uas, SLOT(launch()));
-//    connect(ui.landButton, SIGNAL(clicked()), uas, SLOT(home()));
-//    connect(ui.shutdownButton, SIGNAL(clicked()), uas, SLOT(shutdown()));
-//    //connect(ui.setHomeButton, SIGNAL(clicked()), uas, SLOT(setLocalOriginAtCurrentGPSPosition()));
-//    connect(uas, SIGNAL(modeChanged(int,QString,QString)), this, SLOT(updateMode(int,QString,QString)));
-//    connect(uas, SIGNAL(statusChanged(int)), this, SLOT(updateState(int)));
-//
-//    ui.controlStatusLabel->setText(tr("Connected to ") + uas->getUASName());
-//
-//    this->uas = uas->getUASID();
-//    setBackgroundColor(uas->getColor());
+	QStringList controller_modes;
+	controller_modes << "Attitude PID" << "Translation PID";
+	ui.control_mode_box->addItems(controller_modes);
+
+
+
 }
 
 UAlbertaControlWidget::~UAlbertaControlWidget()
@@ -90,25 +76,75 @@ UAlbertaControlWidget::~UAlbertaControlWidget()
 
 }
 
-
-
-/**
- * Set the background color based on the MAV color. If the MAV is selected as the
- * currently actively controlled system, the frame color is highlighted
- */
-void UAlbertaControlWidget::setBackgroundColor(QColor color)
+void UAlbertaControlWidget::setServoSource()
 {
-    // UAS color
-//    QColor uasColor = color;
-//    QString colorstyle;
-//    QString borderColor = "#4A4A4F";
-//    borderColor = "#FA4A4F";
-//    uasColor = uasColor.darker(900);
-//    colorstyle = colorstyle.sprintf("QLabel { border-radius: 3px; padding: 0px; margin: 0px; background-color: #%02X%02X%02X; border: 0px solid %s; }",
-//                                    uasColor.red(), uasColor.green(), uasColor.blue(), borderColor.toStdString().c_str());
-//    setStyleSheet(colorstyle);
-//    QPalette palette = this->palette();
-//    palette.setBrush(QPalette::Window, QBrush(uasColor));
-//    setPalette(palette);
-//    setAutoFillBackground(true);
+
+#ifdef QGC_USE_UALBERTA_MESSAGES
+	UAlbertaMAV* mav = dynamic_cast<UAlbertaMAV*>(UASManager::instance()->getUASForId(this->uas));
+	if (mav)
+	{
+		qDebug() << "Set servo source to " << ui.servo_source_box->currentText() << " with index: " << ui.servo_source_box->currentIndex();
+		mavlink_message_t msg;
+		mavlink_msg_ualberta_action_pack(uas, 0, &msg, UALBERTA_SET_SERVO_SOURCE, ui.servo_source_box->currentIndex());
+		mav->sendMessage(msg);
+	}
+#endif
+}
+
+void UAlbertaControlWidget::setControlMode()
+{
+#ifdef QGC_USE_UALBERTA_MESSAGES
+
+	UAlbertaMAV* mav = dynamic_cast<UAlbertaMAV*>(UASManager::instance()->getUASForId(uas));
+	if (mav)
+	{
+		qDebug() << "Set Control Mode to " << ui.control_mode_box->currentText() << " with index: " << ui.control_mode_box->currentIndex();
+		mavlink_message_t msg;
+		mavlink_msg_ualberta_action_pack(uas, 0, &msg, UALBERTA_SET_CONTROL_MODE, ui.control_mode_box->currentIndex());
+		mav->sendMessage(msg);
+	}
+#endif
+}
+
+void UAlbertaControlWidget::setOrigin()
+{
+#ifdef QGC_USE_UALBERTA_MESSAGES
+
+	UAlbertaMAV* mav = dynamic_cast<UAlbertaMAV*>(UASManager::instance()->getUASForId(uas));
+	if (mav)
+	{
+		qDebug() << "Set Origin";
+		mavlink_message_t msg;
+		mavlink_msg_ualberta_action_pack(uas, 0, &msg, UALBERTA_SET_ORIGIN, 0);
+		mav->sendMessage(msg);
+	}
+#endif
+}
+
+void UAlbertaControlWidget::setUAS(UASInterface* uas)
+{
+	if (uas != 0)
+	{
+		UAlbertaMAV* mav = dynamic_cast<UAlbertaMAV*>(UASManager::instance()->getUASForId(this->uas));
+		if (mav)
+		{
+			disconnect(mav, SIGNAL(servo_source(QString)), ui.servo_source_label, SLOT(setText(QString)));
+			disconnect(mav, SIGNAL(controlMode(QString)), ui.control_mode_label, SLOT(setText(QString)));
+			disconnect(mav, SIGNAL(pilotMode(QString)), ui.pilot_mode_label, SLOT(setText(QString)));
+			disconnect(mav, SIGNAL(gx3Message(QString)), ui.gx3_message_label, SLOT(setText(QString)));
+			disconnect(mav, SIGNAL(gx3Status(QString)), ui.gx3_state_label, SLOT(setText(QString)));
+		}
+	}
+
+	UAlbertaMAV* mav = dynamic_cast<UAlbertaMAV*>(uas);
+	if (mav)
+	{
+		connect(mav, SIGNAL(servoSource(QString)), ui.servo_source_label, SLOT(setText(QString)));
+		connect(mav, SIGNAL(controlMode(QString)), ui.control_mode_label, SLOT(setText(QString)));
+		connect(mav, SIGNAL(pilotMode(QString)), ui.pilot_mode_label, SLOT(setText(QString)));
+		connect(mav, SIGNAL(gx3Message(QString)), ui.gx3_message_label, SLOT(setText(QString)));
+		connect(mav, SIGNAL(gx3Status(QString)), ui.gx3_state_label, SLOT(setText(QString)));
+	}
+
+    this->uas = uas->getUASID();
 }

@@ -50,18 +50,12 @@ public:
 public slots:
     /** @brief Set the system this widget controls */
     void setUAS(UASInterface* uas);
-
-signals:
-
-
-protected slots:
-    /** @brief Set the background color for the widget */
-    void setBackgroundColor(QColor color);
+	void setServoSource();
+	void setControlMode();
+	void setOrigin();
 
 protected:
     int uas;              ///< Reference to the current uas
-    unsigned int uasMode; ///< Current uas mode
-
 
 private:
     Ui::UAlbertaControlWidget ui;

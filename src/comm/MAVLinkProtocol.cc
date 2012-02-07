@@ -25,6 +25,7 @@
 #include "SlugsMAV.h"
 #include "PxQuadMAV.h"
 #include "ArduPilotMegaMAV.h"
+#include "UAlbertaMAV.h"
 #include "configuration.h"
 #include "LinkManager.h"
 #include "QGCMAVLink.h"
@@ -184,7 +185,10 @@ void MAVLinkProtocol::receiveBytes(LinkInterface* link, QByteArray b)
     mavlink_message_t message;
     mavlink_status_t status;
 
-    for (int position = 0; position < b.size(); position++) {
+
+    for (int position = 0; position < b.size(); position++)
+    {
+//    	qDebug() << "byte: " << std::hex << static_cast<int>((uint8_t)b[position]);
         unsigned int decodeState = mavlink_parse_char(link->getId(), (uint8_t)(b.at(position)), &message, &status);
 
         if (decodeState == 1)
@@ -197,6 +201,7 @@ void MAVLinkProtocol::receiveBytes(LinkInterface* link, QByteArray b)
 //		    continue;
 //	    }
 //#endif
+        	qDebug() << "Message ID: " << message.msgid;
 #ifdef QGC_PROTOBUF_ENABLED
             if (message.msgid == MAVLINK_MSG_ID_EXTENDED_MESSAGE)
             {
@@ -250,6 +255,8 @@ void MAVLinkProtocol::receiveBytes(LinkInterface* link, QByteArray b)
             // ORDER MATTERS HERE!
             // If the matching UAS object does not yet exist, it has to be created
             // before emitting the packetReceived signal
+
+
 
             UASInterface* uas = UASManager::instance()->getUASForId(message.sysid);
 

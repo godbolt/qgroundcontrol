@@ -898,51 +898,7 @@ void UAS::receiveMessage(LinkInterface* link, mavlink_message_t message)
 //            }
 //        }
 //        break;
-#ifdef MAVLINK_ENABLED_UALBERTA
-        case MAVLINK_MSG_ID_NAV_FILTER_BIAS:
-            {
-                mavlink_nav_filter_bias_t bias;
-                mavlink_msg_nav_filter_bias_decode(&message, &bias);
-                quint64 time = getUnixTime();
-                // FIXME REMOVE LATER emit valueChanged(uasId, "b_f[0]", "raw", bias.accel_0, time);
-                // FIXME REMOVE LATER emit valueChanged(uasId, "b_f[1]", "raw", bias.accel_1, time);
-                // FIXME REMOVE LATER emit valueChanged(uasId, "b_f[2]", "raw", bias.accel_2, time);
-                // FIXME REMOVE LATER emit valueChanged(uasId, "b_w[0]", "raw", bias.gyro_0, time);
-                // FIXME REMOVE LATER emit valueChanged(uasId, "b_w[1]", "raw", bias.gyro_1, time);
-                // FIXME REMOVE LATER emit valueChanged(uasId, "b_w[2]", "raw", bias.gyro_2, time);
-            }
-            break;
-        case MAVLINK_MSG_ID_RADIO_CALIBRATION:
-            {
-                mavlink_radio_calibration_t radioMsg;
-                mavlink_msg_radio_calibration_decode(&message, &radioMsg);
-                QVector<uint16_t> aileron;
-                QVector<uint16_t> elevator;
-                QVector<uint16_t> rudder;
-                QVector<uint16_t> gyro;
-                QVector<uint16_t> pitch;
-                QVector<uint16_t> throttle;
 
-                for (int i=0; i<MAVLINK_MSG_RADIO_CALIBRATION_FIELD_AILERON_LEN; ++i)
-                    aileron << radioMsg.aileron[i];
-                for (int i=0; i<MAVLINK_MSG_RADIO_CALIBRATION_FIELD_ELEVATOR_LEN; ++i)
-                    elevator << radioMsg.elevator[i];
-                for (int i=0; i<MAVLINK_MSG_RADIO_CALIBRATION_FIELD_RUDDER_LEN; ++i)
-                    rudder << radioMsg.rudder[i];
-                for (int i=0; i<MAVLINK_MSG_RADIO_CALIBRATION_FIELD_GYRO_LEN; ++i)
-                    gyro << radioMsg.gyro[i];
-                for (int i=0; i<MAVLINK_MSG_RADIO_CALIBRATION_FIELD_PITCH_LEN; ++i)
-                    pitch << radioMsg.pitch[i];
-                for (int i=0; i<MAVLINK_MSG_RADIO_CALIBRATION_FIELD_THROTTLE_LEN; ++i)
-                    throttle << radioMsg.throttle[i];
-
-                QPointer<RadioCalibrationData> radioData = new RadioCalibrationData(aileron, elevator, rudder, gyro, pitch, throttle);
-                emit radioCalibrationReceived(radioData);
-                delete radioData;
-            }
-            break;
-
-#endif
             // Messages to ignore
         case MAVLINK_MSG_ID_SET_LOCAL_POSITION_SETPOINT:
         case MAVLINK_MSG_ID_RAW_IMU:

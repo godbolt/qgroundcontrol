@@ -43,9 +43,19 @@ class UAlbertaMAV : public UAS
 public:
 	UAlbertaMAV(MAVLinkProtocol* protocol, int id);
 
+public slots:
+	void receiveMessage(LinkInterface* link, mavlink_message_t message);
+
+
 signals:
 	void positionChanged(QVector<float> llh, QVector<float> ned);
 	void velcoityChanged(QVector<float> ned);
+	void originChanged(QVector<float> llh_origin);
+	void gx3Status(QString gx3_status);
+	void gx3Message(QString msg);
+	void pilotMode(QString pilot_mode);
+	void controlMode(QString control_mode);
+	void servoSource(QString servo_source);
 };
 
 #endif
